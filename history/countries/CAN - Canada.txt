@@ -19,7 +19,6 @@ if = {
 	set_technology = {
 		gwtank_chassis = 1
 		basic_light_tank_chassis = 1
-		improved_light_tank_chassis = 1
 		basic_heavy_tank_chassis = 1
 		engine_tech_1 = 1
 	}
@@ -1248,6 +1247,20 @@ create_navy_leader = {# Jack Kenneth Highton
 	id = 270
 }
 
+create_navy_leader = {# Jack Kenneth Highton
+	name = "Barry Domvile"
+	portrait_path = "gfx/leaders/CAN/Portrait_England_Barry_Domville.png"
+	traits = { 	
+		old_guard_navy 
+		GBR_british_exile_trait
+	}
+	skill = 3
+	attack_skill = 2
+	defense_skill = 3
+	maneuvering_skill = 2
+	coordination_skill = 3
+}
+
 create_navy_leader = {# Harold Tom Baillie-Grohman
 	name = "Harold Tom Baillie-Grohman"
 	portrait_path = "gfx/leaders/CAN/Portrait_Canada_Harold_Tom_Baillie_Grohman.png"
@@ -1289,7 +1302,7 @@ if = {
 		}
 		bypass_recruitment = no
 		available_to_spy_master = yes
-		nationalities = { GBR CAN ENG }
+		nationalities = { GBR CAN NFL ENG }
 	}
 }
 
@@ -1304,7 +1317,7 @@ if = {
 		}
 		bypass_recruitment = no
 		available_to_spy_master = yes
-		nationalities = { GBR CAN ENG }
+		nationalities = { GBR CAN NFL ENG }
 	}
 }
 
@@ -1319,7 +1332,7 @@ if = {
 		}
 		bypass_recruitment = no
 		available_to_spy_master = yes
-		nationalities = { GBR CAN IRE }
+		nationalities = { GBR CAN NFL ENG }
 	}
 }
 
@@ -1335,7 +1348,23 @@ if = {
 		}
 		bypass_recruitment = no
 		available_to_spy_master = yes
-		nationalities = { GBR CAN IRE }
+		nationalities = { GBR CAN NFL ENG }
+	}
+}
+
+if = {
+	limit = { has_dlc = "La Resistance" }
+	create_operative_leader = {
+		name = "Roald Dahl"
+		GFX = GFX_Portrait_Canada_Roald_Dahl
+		traits = {
+			operative_tough
+			operative_seducer
+			operative_well_groomed
+		}
+		bypass_recruitment = no
+		available_to_spy_master = yes
+		nationalities = { GBR CAN NFL ENG NOR KEN }
 	}
 }
 
@@ -1343,6 +1372,9 @@ if = {
 
 recruit_character = CAN_Robert_Watson_Watt
 recruit_character = CAN_Andrew_McNaughton_Scientist
+recruit_character = CAN_John_James_Denovan
+recruit_character = CAN_Bernice_Weldon_Sargent
+recruit_character = CAN_Charles_Goodeven
 
 
 CAN_start_naval_variant = yes

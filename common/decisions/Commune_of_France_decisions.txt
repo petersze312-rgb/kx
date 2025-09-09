@@ -22,11 +22,17 @@ FRA_hydroelectricity_decisions = {
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision remove FRA_Savoy_Hydroelectricity_decision"
 			735 = {
-				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
-					type = industrial_complex
-					level = 2
+					type = dam
+					level = 1
 					instant_build = yes
+					province = {
+						id = 11573
+					}
+				}
+				custom_effect_tooltip = {
+					localization_key = building_state_modifier|dam
+					INDENT = "    "
 				}
 			}
 		}
@@ -51,16 +57,17 @@ FRA_hydroelectricity_decisions = {
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision remove FRA_Haute_Savoie_Hydroelectricity_decision"
 			943 = {
-				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
-					type = industrial_complex
+					type = dam
 					level = 1
 					instant_build = yes
+					province = {
+						id = 778
+					}
 				}
-				add_building_construction = {
-					type = infrastructure
-					level = 1
-					instant_build = yes
+				custom_effect_tooltip = {
+					localization_key = building_state_modifier|dam
+					INDENT = "    "
 				}
 			}
 		}
@@ -85,16 +92,17 @@ FRA_hydroelectricity_decisions = {
 		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision remove FRA_Romandy_Hydroelectricity_decision"
 			760 = {
-				add_extra_state_shared_building_slots = 2
 				add_building_construction = {
-					type = industrial_complex
-					level = 2
-					instant_build = yes
-				}
-				add_building_construction = {
-					type = infrastructure
+					type = dam
 					level = 1
 					instant_build = yes
+					province = {
+						id = 3612
+					}
+				}
+				custom_effect_tooltip = {
+					localization_key = building_state_modifier|dam
+					INDENT = "    "
 				}
 			}
 		}
@@ -212,26 +220,30 @@ FRA_internationale_category = {
 			has_equipment = { artillery_equipment > 49 }
 		}
 
-		visible = {
-			FROM = {
-				has_war_with = RVA
-				has_socialist_government = yes
-			}
-		}
-
 		cost = 0
 		fire_only_once = yes
+		days_remove = 7
 
 		targets = { RUS }
 		target_trigger = {
 			FROM = {
-				has_war_with = RVA
+				NOT = { has_idea = SOV_foreign_aid }				
+				OR = {
+					has_war_with = RVA
+					has_war_with = RRF
+					has_war_with = WRA
+					has_war_with = TRM
+				}
 				has_socialist_government = yes
 			}
 		}
 
 		ai_will_do = {
 			factor = 3
+			modifier = {
+				add = 100
+				FROM = { has_idea = RUS_Karl_Radek_for_tot }
+			}
 			modifier = {
 				factor = 0
 				has_equipment = { infantry_equipment < 5000 }
@@ -246,39 +258,31 @@ FRA_internationale_category = {
 			}
 		}
 
-		complete_effect = {
+		remove_effect = {
 			log = "[GetDateText]: [Root.GetName]: Decision FRA_help_SOV target: [From.GetName]"
 			FROM = {
-				random_owned_controlled_state = {
-					limit = {
-						free_building_slots = {
-							building = industrial_complex
-							size > 0
-							include_locked = yes
-						}
-					}
-					add_extra_state_shared_building_slots = 1
-					add_building_construction = {
-						type = industrial_complex
-						level = 1
-						instant_build = yes
-					}
+				country_event = rcw.499
+				effect_tooltip = { 
+					add_ideas = SOV_foreign_aid		
+					add_one_random_civilian_factory = yes 
 				}
 			}
-			send_equipment = {
-				target = FROM
-				type = infantry_equipment
-				amount = 600
-			}
-			send_equipment = {
-				target = FROM
-				type = support_equipment
-				amount = 100
-			}
-			send_equipment = {
-				target = FROM
-				type = artillery_equipment
-				amount = 50
+			effect_tooltip = {
+				send_equipment = {
+					target = FROM
+					type = infantry_equipment
+					amount = 600
+				}
+				send_equipment = {
+					target = FROM
+					type = support_equipment
+					amount = 100
+				}
+				send_equipment = {
+					target = FROM
+					type = artillery_equipment
+					amount = 50
+				}
 			}
 		}
 	}
@@ -347,6 +351,7 @@ FRA_internationale_category = {
 				is_in_faction = no
 				NOT = { has_country_flag = SRI_refused_intl_membership }
 			}
+			NOT = { has_war_with = SRI }
 		}
 
 		targets = { SRI }

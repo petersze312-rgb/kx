@@ -77,23 +77,24 @@ create_country_leader = {
 
 create_country_leader = {
 	name = "Urania Mella"
-	picture = "gfx/leaders/Operatives/EuropeFemale28.png"
+	picture = "gfx/leaders/GLC/Portrait_GLC_Urania_Mella_Serrano.png"
 	expire = "1.1.1"
 	ideology = feminist_syndicalist_subtype 
+	female = yes
 }
 
 create_country_leader = {
 	name = "Ricardo Mella"
-	picture = "gfx/leaders/Generic/Portrait_Europe_Generic_new_12.png"
+	picture = "gfx/leaders/GLC/Portrait_GLC_Ricardo_Mella.png"
 	expire = "1.1.1"
 	ideology = moderate_socialist_subtype 
 }
 
 create_country_leader = {
 	name = "Basilio Álvarez"
-	picture = "gfx/leaders/Generic/Portrait_Europe_Generic_new_21.png"
+	picture = "gfx/leaders/GLC/Portrait_GLC_Basilio_Alvarez.png"
 	expire = "1.1.1"
-	ideology = socdem_christian_socialism_subtype 
+	ideology = socdem_agrarianism_subtype 
 }
 
 create_country_leader = {
@@ -126,7 +127,7 @@ create_country_leader = {
 
 create_country_leader = {
 	name = "Antonio Losada Diéguez"
-	picture = "gfx/leaders/Generic/Portrait_Europe_Generic_new_22.png"
+	picture = "gfx/leaders/GLC/Portrait_GLC_Antonio_Losada_Dieguez.png"
 	expire = "1.1.1"
 	ideology = pataut_christian_democracy_subtype 
 }
@@ -135,5 +136,5 @@ create_country_leader = {
 	name = "Vicente Risco"
 	picture = "gfx/leaders/GLC/Portrait_GLC_Vicente_Risco.png"
 	expire = "1.1.1"
-	ideology = occultism_subtype 
+	ideology = neo_rexurdimento_subtype 
 }

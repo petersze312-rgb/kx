@@ -38,6 +38,9 @@ MAF_collapse = {
 	892 = {
 		set_state_flag = MAF_claim
 	}
+	925 = {
+		set_state_flag = MAF_claim
+	}
 	every_state = {
 		limit = { is_core_of = COG }
 		set_state_flag = MAF_claim
@@ -98,7 +101,6 @@ MAF_collapse = {
 			country_exists = NMB
 			NMB = { NOT = { has_country_flag = MAF_already_exists } }
 		}
-		MAF = { NMB = { transfer_technology = yes } }
 		NMB = {
 			set_cosmetic_tag = NMB_GER
 			if = { 
@@ -150,7 +152,6 @@ MAF_collapse = {
 			country_exists = TZN
 			TZN = { NOT = { has_country_flag = MAF_already_exists } }
 		}
-		MAF = { TZN = { transfer_technology = yes } }
 		TZN = {
 			set_cosmetic_tag = TZN_GER
 			load_oob = TZN
@@ -485,6 +486,7 @@ MAF_collapse = {
 		}
 		ADA = { AFR_open_tree = yes }
 		ADA = { load_focus_tree = african_shared_focus }
+		ADA = { add_to_array = { global.MAF_collapse_tags = THIS } }
 	}
 	if = {
 		limit = {
@@ -541,6 +543,7 @@ MAF_collapse = {
 			OR = {
 				state = 539
 				state = 297
+				state = 1335
 			}
 		}
 		GAB = { transfer_state = PREV }
@@ -1275,6 +1278,13 @@ MAF_collapse = {
 		limit = { has_country_flag = MAF_already_exists }
 		clr_country_flag = MAF_already_exists
 	}
+	MAF = {
+		every_country = {		
+			limit = { is_in_array = { global.MAF_collapse_tags = THIS } }
+			PREV = { transfer_technology = yes } 
+		}
+	}
+
 }
 MAF_update_collapse_var = {
 	add_to_variable = { MAF_collapse_var = 1 }

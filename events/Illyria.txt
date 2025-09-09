@@ -231,16 +231,11 @@ country_event = { #The War of Independence
 	desc = cro.1.d
 	picture = GFX_report_event_generic_towar
 
-	is_triggered_only = no
-
 	trigger = {
 		has_war_with = AUS
-		NOT = { has_country_flag = CRO_war_of_independence_not_started }
 		tag = CRO
+		is_in_faction = no
 	}
-	
-	mean_time_to_happen = { days = 1 }
-
 
 	fire_only_once = yes
 	
@@ -251,7 +246,6 @@ country_event = { #The War of Independence
 		add_war_support = 0.25
 		remove_ideas = AUS_part_of_the_Empire
 		set_country_flag = CRO_war_of_independence
-		clr_country_flag = CRO_war_of_independence_not_started
 		set_rule = { can_not_declare_war = no }
 		declare_war_on = {
 			target = AUS
@@ -265,19 +259,15 @@ country_event = { #The War of Independence Ends
 	title = cro.2.t
 	desc = cro.2.d
 	picture = GFX_report_event_generic_happy_crowd
-
-	is_triggered_only = no
 	
 	trigger = {
 		NOT = { has_war_with = AUS }
 		is_puppet = no
+		is_in_faction = no
 		tag = CRO
 		has_idea = CRO_for_illyria
 		has_country_flag = CRO_war_of_independence
 	}
-	
-	mean_time_to_happen = { days = 1 }
-
 
 	fire_only_once = yes
 	
@@ -310,8 +300,6 @@ country_event = { #Bombing in Zagreb
 	desc = cro.3.d
 	picture = GFX_report_event_IRE_bombing
 
-	is_triggered_only = no
-	
 	trigger = {
 		has_war_with = AUS
 		tag = CRO
@@ -334,8 +322,6 @@ country_event = { #The Bosnian Guerillas
 	desc = cro.4.d
 	picture = GFX_report_event_IRE_deadbody
 
-	is_triggered_only = no
-	
 	trigger = {
 		has_war_with = AUS
 		tag = CRO
@@ -368,14 +354,21 @@ country_event = { #The Future of the Interim Republic
 	picture = GFX_report_event_IRE_victory_rally
 
 	is_triggered_only = yes
-	
-	mean_time_to_happen = { days = 1 }
 
 	fire_only_once = yes
 	
 	option = { #Begin election procedures
 		name = cro.5.a
-		ai_chance = { factor = 100 }
+		ai_chance = { 
+			factor = 100
+			modifier = {
+				factor = 0
+				has_game_rule = {
+					rule = CRO_election
+					option = CRO_ELECTION_PATAUT
+				}
+			}
+		}
 		add_political_power = 50
 		add_stability = -0.03		#Finish this soon
 		country_event = { id = cro.10 days = 20 }
@@ -383,7 +376,30 @@ country_event = { #The Future of the Interim Republic
 	
 	option = { #Ensure stability for Illyria first
 		name = cro.5.b
-		ai_chance = { factor = 100 }
+		ai_chance = { 
+			factor = 100
+			modifier = {
+				factor = 0
+				OR = {
+					has_game_rule = {
+						rule = CRO_election
+						option = CRO_ELECTION_MARLIB
+					}
+					has_game_rule = {
+						rule = CRO_election
+						option = CRO_ELECTION_SOCLIB
+					}
+					has_game_rule = {
+						rule = CRO_election
+						option = CRO_ELECTION_SOCDEM
+					}
+					has_game_rule = {
+						rule = CRO_election
+						option = CRO_ELECTION_RADSOC
+					}
+				}
+			}
+		}
 		add_political_power = -30
 		add_stability = 0.03
 		hidden_effect = {
@@ -404,7 +420,16 @@ country_event = { #Bosnians raid Mostar
 	
 	option = { #Teach the next Bosnians that show up a "lesson"
 		name = cro.6.a
-		ai_chance = { factor = 100 }
+		ai_chance = { 
+			factor = 100
+			modifier = {
+				factor = 0
+				has_game_rule = {
+					rule = CRO_election
+					option = CRO_ELECTION_PATAUT
+				}
+			}
+		}
 		add_stability = -0.05
 		country_event = { id = cro.7 days = 4 } #The "Lesson"
 		set_country_flag = CRO_crisis
@@ -493,19 +518,50 @@ country_event = { #Election results are in!
 	desc = cro.11.d
 	picture = GFX_report_event_generic_strike
 
-
+	immediate = {
+		log = "[GetDateText]: [Root.GetName]: event cro.11"
+		remove_all_ministers = yes
+		hidden_effect = {
+			country_event = {
+				id = cro.11
+				months = 48
+			}
+		}
+	}
 	is_triggered_only = yes
-
-	fire_only_once = yes
+	trigger = { has_socialist_government = no }
 	
 	option = { #The Social Democrats Win!
 		name = cro.11.a
-		ai_chance = { factor = 100 }
+		ai_chance = {
+			factor = 100
+			modifier = {
+				factor = 0
+				OR = {
+					has_game_rule = {
+						rule = CRO_election
+						option = CRO_ELECTION_MARLIB
+					}
+					has_game_rule = {
+						rule = CRO_election
+						option = CRO_ELECTION_SOCLIB
+					}
+				}
+			}
+		}
 		add_political_power = 20
 		add_stability = 0.1
 		
-		set_politics = {
-			ruling_party = social_democrat
+		meta_effect = {
+			text = {
+				set_politics = {
+					ruling_party = social_democrat
+					last_election = "[CURRENT_DATE]"
+					election_frequency = 48
+					elections_allowed = yes
+				}
+			}
+			CURRENT_DATE = "[?global.date.GetDateStringNoHour]"
 		}
 		remove_all_ministers = yes
 		add_ideas = {
@@ -518,17 +574,47 @@ country_event = { #Election results are in!
 			ideology = social_democrat
 			popularity = 0.2
 		}
-		set_cosmetic_tag = ILL_free_republic
+		if = {
+			limit = { NOT = { has_cosmetic_tag = ILL_south_slavic_union } }
+			set_cosmetic_tag = ILL_free_republic
+		}
 		set_country_flag = CRO_election
 	}
 	
 	option = { #The Social Liberals Win!
 		name = cro.11.b
-		ai_chance = { factor = 100 }
+		ai_chance = { 
+			factor = 100
+			modifier = {
+				factor = 0
+				OR = {
+					has_game_rule = {
+						rule = CRO_election
+						option = CRO_ELECTION_MARLIB
+					}
+					has_game_rule = {
+						rule = CRO_election
+						option = CRO_ELECTION_SOCDEM
+					}
+					has_game_rule = {
+						rule = CRO_election
+						option = CRO_ELECTION_RADSOC
+					}
+				}
+			}
+		}
 		add_political_power = 20
 		add_stability = 0.1
-		set_politics = {
-			ruling_party = social_liberal
+		meta_effect = {
+			text = {
+				set_politics = {
+					ruling_party = social_liberal
+					last_election = "[CURRENT_DATE]"
+					election_frequency = 48
+					elections_allowed = yes
+				}
+			}
+			CURRENT_DATE = "[?global.date.GetDateStringNoHour]"
 		}
 		add_popularity = {
 			ideology = social_liberal
@@ -539,19 +625,59 @@ country_event = { #Election results are in!
 			
 		}
 		set_country_flag = CRO_election
+		if = {
+			limit = {
+				NOT = {
+					has_country_flag = CRO_not_first_election
+				}
+			}
+			set_country_flag = CRO_not_first_election
+		}
 	}
 	
 	option = { #The Liberals Win!
 		name = cro.11.c
-		ai_chance = { factor = 100 }
+		ai_chance = { 
+			factor = 100
+			modifier = {
+				factor = 0
+				OR = {
+					has_game_rule = {
+						rule = CRO_election
+						option = CRO_ELECTION_SOCLIB
+					}
+					has_game_rule = {
+						rule = CRO_election
+						option = CRO_ELECTION_SOCDEM
+					}
+					has_game_rule = {
+						rule = CRO_election
+						option = CRO_ELECTION_RADSOC
+					}
+				}
+			}
+		}
 		add_political_power = 20
 		add_stability = 0.1
-		set_politics = {
-			ruling_party = market_liberal
+		meta_effect = {
+			text = {
+				set_politics = {
+					ruling_party = market_liberal
+					last_election = "[CURRENT_DATE]"
+					election_frequency = 48
+					elections_allowed = yes
+				}
+			}
+			CURRENT_DATE = "[?global.date.GetDateStringNoHour]"
 		}
+		add_soccon_to_coalition = yes
 		add_popularity = {
 			ideology = market_liberal
-			popularity = 0.1
+			popularity = 0.05
+		}
+		add_popularity = {
+			ideology = social_conservative
+			popularity = 0.05
 		}
 		remove_all_ministers = yes
 		add_ideas = {
@@ -561,6 +687,14 @@ country_event = { #Election results are in!
 			CRO_uro_Basaricek_sec_sco
 		}
 		set_country_flag = CRO_election
+		if = {
+			limit = {
+				NOT = {
+					has_country_flag = CRO_not_first_election
+				}
+			}
+			set_country_flag = CRO_not_first_election
+		}
 	}
 }
 
@@ -894,6 +1028,7 @@ country_event = { #Tito's Decision
 	trigger = {
 		tag = CRO
 		has_government = social_democrat
+		is_subject = no
 	}
 
 	fire_only_once = yes
@@ -901,22 +1036,23 @@ country_event = { #Tito's Decision
 	
 	option = { #Take over the government as a Syndicalist dictatorship
 		name = cro.23.a
+		trigger = {
+			NOT = { has_country_flag = CRO_not_first_election }
+		}
 		ai_chance = {
 			factor = 100
 			modifier = {
 				factor = 0
-				is_subject = yes
-				OR = {
-					overlord = {
-						NOT =  { has_country_flag = soc_dems_are_socialists }
-					}
-					NOT = { has_idea = AUS_part_of_the_Empire }
+				has_game_rule = {
+					rule = CRO_election
+					option = CRO_ELECTION_SOCDEM
 				}
 			}
 		}
 		add_stability = -0.3
 		set_politics = {
 			ruling_party = radical_socialist
+			elections_allowed = no
 		}
 		remove_all_ministers = yes	
 		add_ideas = {
@@ -956,9 +1092,26 @@ country_event = { #Tito's Decision
 	
 	option = { #Tito stays loyal to the Republic
 		name = cro.23.b
-		ai_chance = { factor = 10 }
+		ai_chance = {
+			factor = 10
+			modifier = {
+				factor = 0
+				has_game_rule = {
+					rule = CRO_election
+					option = CRO_ELECTION_RADSOC
+				}
+			}
+		}
 		add_stability = 0.15
 		set_country_flag = CRO_tito_loyal
+		if = {
+			limit = {
+				NOT = {
+					has_country_flag = CRO_not_first_election
+				}
+			}
+			set_country_flag = CRO_not_first_election
+		}
 	}
 }
 
@@ -1000,7 +1153,16 @@ country_event = { #Bosnia Petitions for Autonomy
 	
 	option = { #Whatever.
 		name = cro.24.b
-		ai_chance = { factor = 50 }
+		ai_chance = {
+			factor = 50
+			modifier = {
+				factor = 0
+				has_game_rule = {
+					rule = CRO_election
+					option = CRO_ELECTION_PATAUT
+				}
+			}
+		}
 		add_stability = 0.05
 		add_political_power = -60
 		add_ideas = CRO_bosnian_autonomy
@@ -1680,9 +1842,6 @@ country_event = { #End of Illyria
 	is_triggered_only = no
 	
 	is_triggered_only = yes
-	
-	mean_time_to_happen = { days = 1 }
-
 
 	fire_only_once = yes
 	
@@ -1785,10 +1944,6 @@ country_event = { #Victory Day
 		has_country_flag = CRR_CIVIL_WAR
 	}
 	
-	
-	mean_time_to_happen = { days = 1 }
-
-
 	fire_only_once = yes
 	
 	option = { #Oh
@@ -1838,9 +1993,9 @@ country_event = { #Victory Day
 			set_country_flag = CRO_won_civilwar
 			set_country_flag = CRO_won_independence
 			set_country_flag = CRO_federation_dead
-		}
-		CRO = {
-			country_event = { id = cro.10 days = 9 }
+			uncomplete_national_focus = {
+				focus = CRO_new_election
+			}
 		}
 		CRO = {
 			white_peace = BOS
@@ -1876,10 +2031,6 @@ country_event = { #Victory Day
 		}
 	}
 	
-	
-	mean_time_to_happen = { days = 1 }
-
-
 	fire_only_once = yes
 	
 	option = { #Oh
@@ -1913,13 +2064,10 @@ country_event = { #Victory Day
 		}
 		CRO = {
 			has_war_with = AUS
+			is_in_faction = no
 		}
 	}
 	
-	
-	mean_time_to_happen = { days = 1 }
-
-
 	fire_only_once = yes
 	
 	option = { #Oh
@@ -2082,6 +2230,31 @@ country_event = { #Croatia Revolts!
 		set_country_flag = CRO_federation_dead
 	}
 }
+
+country_event = { #CoF - Illyria wants to join our faction
+	id = cro.50
+	title = cro.50.t
+	desc = cro.50.d 
+	picture = GFX_report_event_generic_diplomacy1
+
+	is_triggered_only = yes
+
+	fire_only_once = yes
+	
+	
+	option = { #Allow them to...
+		name = cro.50.a
+		ai_chance = { factor = 100 }
+		add_to_faction = CRO
+	}
+	
+	option = { #No
+		name = cro.50.b
+		ai_chance = { factor = 0 }
+		
+	}
+}
+
 ###Reign of Terror###
 country_event = { #The Beginning of the Reign of Terror
 	id = reign.1
@@ -2481,10 +2654,6 @@ country_event = {
 			}
 		}
 	}
-	
-	
-	mean_time_to_happen = { days = 1 }
-
 
 	fire_only_once = yes
 	
@@ -2512,10 +2681,6 @@ country_event = {
 		}
 	}
 	
-	
-	mean_time_to_happen = { days = 1 }
-
-
 	fire_only_once = yes
 	
 	immediate = {
@@ -2541,10 +2706,6 @@ country_event = {
 			}
 		}
 	}
-	
-	
-	mean_time_to_happen = { days = 1 }
-
 
 	fire_only_once = yes
 	
@@ -2574,10 +2735,6 @@ country_event = {
 		}
 	}
 	
-	
-	mean_time_to_happen = { days = 1 }
-
-
 	fire_only_once = yes
 	
 	immediate = {
@@ -2605,10 +2762,6 @@ country_event = {
 		}
 	}
 	
-	
-	mean_time_to_happen = { days = 1 }
-
-
 	fire_only_once = yes
 	
 	immediate = {
@@ -2634,10 +2787,6 @@ country_event = {
 			}
 		}
 	}
-	
-	
-	mean_time_to_happen = { days = 1 }
-
 
 	fire_only_once = yes
 	

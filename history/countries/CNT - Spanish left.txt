@@ -1,4 +1,4 @@
-﻿	capital = 165
+﻿capital = 165
 oob = "empty"
 
 set_technology = {
@@ -89,7 +89,7 @@ if = {
 }
 
 set_research_slots = 3
-set_cosmetic_tag = CNT_FAI
+set_cosmetic_tag = CNT_PROV_GOV
 
 set_politics = {
 	ruling_party = syndicalist
@@ -156,7 +156,7 @@ create_country_leader = {
 
 create_country_leader = {
 	name = "Comité Central de la C.N.T.-F.A.I."
-	picture = "gfx/leaders/CNT/Portrait_Switzerland_Council.png"
+	picture = "gfx/leaders/CNT/Portrait_CNT_FAI_Council.png"
 	expire = "1.1.1"
 	ideology = anarcho_syndicalist_subtype
 }
